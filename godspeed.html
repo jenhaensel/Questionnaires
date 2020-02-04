@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Godspeed Questionnaire</title>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.js" 
+		integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU=" crossorigin="anonymous">
+	</script>
+</head>
+
+<style>
+	span,
+	div {
+	  display: inline;
+	}
+	body {
+	  font-family: Arial;
+	}
+	.slider {
+	  -webkit-appearance: none;
+	  width: 100%;
+	  margin: 15px 0;
+	  height: 2px;
+	  border-radius: 3px;  
+	  background: #000000;
+	  outline: none;
+	  opacity: 1;
+	  -webkit-transition: .2s;
+	  transition: opacity .2s;
+	}
+	.slider::-webkit-slider-thumb {
+	  -webkit-appearance: none;
+	  width: 10px;
+	  height: 10px;
+	  border-radius: 50%; 
+	  background: #4CAF50;
+	  cursor: pointer;
+	}
+	.slider::-moz-range-thumb {
+	  width: 10px;
+	  height: 10px;
+	  border-radius: 50%;
+	  background: #4CAF50;
+	  cursor: pointer;
+	}
+	.sliderticks {
+	  display: flex;
+	  justify-content: center;
+	}
+	.sliderticks p {
+	  display: flex;
+	  justify-content: center;
+	  text-align: center;
+	  width: 1px;
+	  background: #000000;
+	  height: 10px;
+	  line-height: 35px;
+	  margin: -15px 0 10px 0;
+	}
+	input[type=button] {
+	  -webkit-transition-duration: 0.4s;
+	  transition-duration: 0.2s;
+	  border-radius: 8px;
+	  background-color: #4CAF50;
+	  border: none;
+	  color: white;
+	  padding: 20px 25px;
+	  cursor: pointer;
+	  font-size: 20px;
+	}
+	.button:hover {
+	  background-color: #e7e7e7;
+	  color: green;
+	}
+</style>
+
+<body>
+	<h2>Please use the slider to rate your impression of the robot on these scales:</h2> <br>
+	Participant ID: <input type="text" name="partName" id="partname"><br>
+	
+	<!-- Table for questionnaire items -->
+	<table style="width:100%"></table>
+	<input type="button" class ="button" id="button" value="Submit" style="margin-left: 200%"></div><br><br>
+	
+		
+<script>
+	var itemLeft = ["Fake", "Machinelike", "Unconscious", "Artificial", "Moving rigidly", "Dead", "Stagnant", "Mechanical", "Artificial", 
+					"Inert", "Apathetic", "Unlikeable", "Unfriendly", "Unkind", "Unpleasant", "Awful", "Incompetent", "Ignorant", "Irresponsible", 
+					"Unintelligent", "Foolish", "Anxious", "Agitated", "Quiescent"]; 
+	var itemRight = ["Natural", "Humanlike", "Conscious", "Lifelike", "Moving elegantly", "Alive", "Lively", "Organic", "Lifelike", 
+					"Interactive", "Responsive", "Likeable", "Friendly", "Kind", "Pleasant", "Nice", "Competent", "Knowledgable", "Responsible",
+					"Intelligent", "Sensible", "Relaxed", "Calm", "Surprised"];
+	
+	// Generate table: left = items from itemLeft; middle = slider; right = items from itemRight
+	$(document).ready(function() {
+	for (i = 0; i < itemLeft.length; i++) {
+		var $newRow = $("<tr><td align='right'>" + itemLeft[i] + "</td>" + // left column
+			"<td><div class='sliderwrap'><input type='range' min='-100' max='100' value='0' class='slider'>" + // middle column: define slider
+			"<div class='sliderticks'><p>0</p></div></div></td>" + 	// middle column: set 0, display current slider value
+																	// If wanting to display current value, add "Value: <span></span>" between the two </div> & uncomment lines 103&105
+			"<td align='left'>" + itemRight[i] + "</td></tr>"), // right column
+		submitButton = document.getElementById( "button" ); // get existing element
+ 
+		$( "table" ).append( $newRow, [submitButton] );
+	}
+
+	// Visualise slider values
+	var x = document.getElementsByClassName("sliderwrap"); 
+	for (i = 0; i < x.length; i++) { 
+		var slider = x[i].children[0]; // Get slider value
+		var sliderOutput = x[i].children[2]; // Output slider value
+		sliderValue(slider, sliderOutput);
+	}
+		
+	function sliderValue(slider, sliderOutput) {
+		//sliderOutput.innerHTML = slider.value;
+		slider.oninput = function() {
+		//sliderOutput.innerHTML = this.value;
+		}
+	}
+
+	// Write slider values into a single text file for download
+	function download(file, text) { 
+		var element = document.createElement('a');
+		element.setAttribute('href', 'data:text/plain;charset=utf-8, ' + encodeURIComponent(text)); 
+		element.setAttribute('download', file); 
+		document.body.appendChild(element);
+		element.click(); 
+		document.body.removeChild(element); 
+	} 
+	
+	// Download file when clicking button
+	document.getElementById("button").addEventListener("click", function() {
+		var str = "Godspeed_";
+		var filename = str.concat(document.getElementById("partname").value, ".txt"); // add participant ID to file name
+		var a = new Array(itemLeft.length);
+		for (i = 0; i < a.length; i++) {
+			a[i] = [x[i].children[0].value];
+		}
+		download(filename, a);
+	}, false); 
+		
+	console.log( "Done!" );
+	});
+		
+</script>
+</body>
+</html>
